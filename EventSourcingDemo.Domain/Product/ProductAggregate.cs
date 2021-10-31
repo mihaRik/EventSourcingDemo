@@ -65,7 +65,6 @@ namespace EventSourcingDemo.Domain.Product
             Name = @event.Name;
             Description = @event.Description;
             Price = @event.Price;
-            LastModified = DateTime.Now;
         }
 
         public void Apply(ProductNameChangedEvent @event)

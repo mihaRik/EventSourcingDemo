@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace EventSourcingDemo.EventStore
 {
-    public class EventStore : IEventStore  //, IDisposable
+    public class EventStore : IEventStore
     {
         private readonly IEventStoreConnection _connection;
 
@@ -21,9 +21,9 @@ namespace EventSourcingDemo.EventStore
         {
             var eventData = new EventData(@event.EventId, @event.GetType().AssemblyQualifiedName, true, Serialize(@event), Encoding.UTF8.GetBytes("{}"));
 
-            var aggregateVersion = @event.AggregateVersion == -1 ? ExpectedVersion.NoStream : @event.AggregateVersion;
+            var aggregateVersion = @event.AggregateVersion == -1 ? ExpectedVersion.NoStream : @event.AggregateVersion - 1;
 
-            await _connection.AppendToStreamAsync(@event.AggregateId.ToString(), aggregateVersion - 1, eventData);
+            await _connection.AppendToStreamAsync(@event.AggregateId.ToString(), aggregateVersion, eventData);
         }
 
         public async Task<IEnumerable<IEvent>> ReadEventsAsync(Guid aggregateId)

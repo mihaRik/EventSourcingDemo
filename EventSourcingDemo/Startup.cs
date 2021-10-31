@@ -58,7 +58,7 @@ namespace EventSourcingDemo
             services.AddScoped<IWarehouseWriter, WarehouseWriter>();
             services.AddScoped<IWarehouseReader, WarehouseReader>();
             services.AddScoped<IProductWriter, ProductWriter>();
-            //services.AddScoped<IProductReader, ProductReader>();
+            services.AddScoped<IProductReader, ProductReader>();
 
             AddEventHandlers(services);
             AddRepositories(services);
@@ -73,6 +73,10 @@ namespace EventSourcingDemo
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            using (var scope = app.ApplicationServices.CreateScope())
+            using (var context = scope.ServiceProvider.GetService<EventSourcingReadModelDbContext>())
+                context.Database.Migrate();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -102,7 +106,7 @@ namespace EventSourcingDemo
             services.AddTransient<IEventHandler<ProductNameChangedEvent>, WarehouseUpdater>();
             services.AddTransient<IEventHandler<WarehouseDeletedEvent>, WarehouseUpdater>();
             services.AddTransient<IEventHandler<WarehouseItemDeletedEvent>, WarehouseUpdater>();
-            
+
             services.AddTransient<IEventHandler<ProductCreatedEvent>, ProductUpdater>();
             services.AddTransient<IEventHandler<ProductNameChangedEvent>, ProductUpdater>();
             services.AddTransient<IEventHandler<ProductDeletedEvent>, ProductUpdater>();

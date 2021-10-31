@@ -168,8 +168,6 @@ namespace EventSourcingDemo.Domain.Warehouse
             };
 
             Items.Add(item);
-         
-            LastModifiedAt = DateTime.Now;
         }
 
         public void Apply(ExistingItemAddedToWarehouseEvent @event)
@@ -179,8 +177,6 @@ namespace EventSourcingDemo.Domain.Warehouse
             if (item == null) throw new KeyNotFoundException(nameof(item));
 
             item.Quantity += @event.QuantityAdded;
-         
-            LastModifiedAt = DateTime.Now;
         }
 
         public void Apply(WithdrawnEvent @event)
@@ -195,8 +191,6 @@ namespace EventSourcingDemo.Domain.Warehouse
             {
                 Items.Remove(item);
             }
-
-            LastModifiedAt = DateTime.Now;
         }
 
         public void Apply(WarehouseDeletedEvent @event)
