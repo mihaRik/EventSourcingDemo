@@ -9,13 +9,13 @@ namespace EventSourcingDemo.Domain.Warehouse
 {
     public class WarehouseAggregate : AggregateBase
     {
-        private string Name { get; set; }
+        public string Name { get; set; }
 
-        private DateTime CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; }
 
-        private DateTime LastModifiedAt { get; set; }
+        public DateTime LastModifiedAt { get; set; }
 
-        private ICollection<WarehouseItem> Items { get; set; } = new List<WarehouseItem>();
+        public ICollection<WarehouseItem> Items { get; set; } = new List<WarehouseItem>();
 
         private WarehouseAggregate() { }
 

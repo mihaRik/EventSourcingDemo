@@ -13,20 +13,20 @@ namespace EventSourcingDemo.Controllers
     [Route("api/product")]
     public class ProductController : ControllerBase
     {
-        private readonly IReadRepository<ProductReadModel> _readRepository;
+        private readonly IProductReader _productReader;
         private readonly IProductWriter _productWriter;
 
-        public ProductController(IReadRepository<ProductReadModel> readRepository,
+        public ProductController(IProductReader productReader,
                                  IProductWriter productWriter)
         {
-            _readRepository = readRepository ?? throw new ArgumentNullException(nameof(readRepository));
+            _productReader = productReader ?? throw new ArgumentNullException(nameof(productReader));
             _productWriter = productWriter ?? throw new ArgumentNullException(nameof(productWriter));
         }
 
         [HttpGet]
         public IActionResult GetAll()
         {
-            var items = _readRepository.GetAll(_ => true);
+            var items = _productReader.GetAll(_ => true);
 
             return Ok(items.Select(_ => new
             {
@@ -40,7 +40,7 @@ namespace EventSourcingDemo.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var item = await _readRepository.GetByIdAsync(id);
+            var item = await _productReader.GetByIdAsync(id);
 
             return Ok(new
             {
