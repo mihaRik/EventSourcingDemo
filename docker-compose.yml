@@ -1,0 +1,45 @@
+version: '3.4'
+
+services:
+  eventsourcingdemo:
+    image: ${DOCKER_REGISTRY-}eventsourcingdemo
+    build:
+      context: .
+      dockerfile: EventSourcingDemo/Dockerfile
+    depends_on:
+      - esdb
+      - mssql
+    ports:
+      - "5555:80"
+
+  esdb:
+    image: "eventstore/eventstore"
+    environment:
+      - EVENTSTORE_RUN_PROJECTIONS=All
+      - EVENTSTORE_EXT_TCP_PORT=1113
+      - EVENTSTORE_HTTP_PORT=2113
+      - EVENTSTORE_INSECURE=true
+      - EVENTSTORE_ENABLE_EXTERNAL_TCP=true
+      - EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP=true
+    ports:
+      - "1113:1113"
+      - "2113:2113"
+    volumes:
+      - type: volume
+        source: eventstore-volume-data
+        target: /var/lib/eventstore
+      - type: volume
+        source: eventstore-volume-logs
+        target: /var/log/eventstore
+
+  mssql:
+    image: "mcr.microsoft.com/mssql/server:latest"
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Q@345678
+    ports:
+      - "1433:1433"
+
+volumes:
+  eventstore-volume-data:
+  eventstore-volume-logs:
