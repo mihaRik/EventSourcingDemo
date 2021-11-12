@@ -5,7 +5,7 @@ services:
     image: ${DOCKER_REGISTRY-}eventsourcingdemo
     build:
       context: .
-      dockerfile: EventSourcingDemo/Dockerfile
+      dockerfile: ./Dockerfile
     depends_on:
       - esdb
       - mssql
